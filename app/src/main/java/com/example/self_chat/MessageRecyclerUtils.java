@@ -34,18 +34,35 @@ public class MessageRecyclerUtils {
     }
 
 
+
+    interface MessageClickCallback {
+        void onMessageClick(Message message);
+    }
+
+
     static class MessageAddapter extends ListAdapter<Message, MessageHolder>{
 
         public MessageAddapter(){
             super(new MessageCallBack());
         }
 
+        public MessageClickCallback callback;
         @NonNull
         @Override
         public MessageHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             Context context = viewGroup.getContext();
             View itemView = LayoutInflater.from(context).inflate(R.layout.one_message_layout,viewGroup,false);
-            return new MessageHolder (itemView);
+            final MessageHolder holder = new MessageHolder(itemView);
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Message message = getItem(holder.getAdapterPosition());
+                    if (callback != null)
+                        callback.onMessageClick(message);
+                    return true;
+                }
+            });
+            return holder;
         }
 
         @Override
@@ -56,5 +73,11 @@ public class MessageRecyclerUtils {
 
         }
     }
+
+
+
+
+
+
 
 }
