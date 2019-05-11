@@ -2,6 +2,7 @@ package com.example.self_chat;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -22,14 +32,17 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity  implements MessageRecyclerUtils.MessageClickCallback {
 
     private MessageRecyclerUtils.MessageAddapter addapter = new MessageRecyclerUtils.MessageAddapter();
-//    private ArrayList<Message> all_messages = new ArrayList<Message>();
     private ArrayList<Message> all_messages;
+
+
+    CollectionReference cr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        load_all_messages();
-        Log.i("number of messages",  ""+all_messages.size());
+
+        all_messages = new ArrayList<>();
 
         RecyclerView recyclerView = findViewById(R.id.message_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -37,7 +50,28 @@ public class MainActivity extends AppCompatActivity  implements MessageRecyclerU
         recyclerView.setAdapter(addapter);
         addapter.callback =this;
 
-        addapter.submitList(all_messages);
+
+        cr = FirebaseFirestore.getInstance().collection("Messages");
+
+        cr.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful() && task.getResult()!= null ){
+
+                    for (DocumentSnapshot document : task.getResult()) {
+                        Message msg = document.toObject(Message.class);
+                        all_messages.add(msg);
+                    }
+                    addapter.submitList(all_messages);
+                } else {
+                    load_all_messages();
+                    addapter.submitList(all_messages);
+
+                }
+            }});
+
+        Log.i("number of messages",  ""+all_messages.size());
+
 
         Button sendButton = (Button) findViewById(R.id.buttonToSend);
         final EditText filledInSend = (EditText) findViewById(R.id.wantToSend) ;
@@ -52,8 +86,10 @@ public class MainActivity extends AppCompatActivity  implements MessageRecyclerU
 
                 }
                 else{
-                    all_messages.add(new Message(curr_sent_message));
+                    Message msg =new Message(curr_sent_message);
+                    all_messages.add(msg);
                     addapter.submitList(all_messages);
+                    cr.document(String.valueOf(msg.id)).set(msg);
 
                 }
                 filledInSend.setText("");
@@ -128,6 +164,8 @@ public class MainActivity extends AppCompatActivity  implements MessageRecyclerU
                 all_messages = peopleCopy;
                 addapter.submitList(all_messages);
                 save_all_messages();
+
+                cr.document(String.valueOf(message.id)).delete();
 
             }
         });

@@ -4,11 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Message implements Parcelable {
 
     public String text_in_message;
+    public long timestamp;
+    public String id;
+
+
 
 //    static ArrayList<Message> get_all(){
 //        ArrayList<Message> all = new ArrayList<>();
@@ -19,11 +25,15 @@ public class Message implements Parcelable {
 
 
 
-
+    Message(){}
 
     //string constructor:
     Message(String text_in_mes){
+        Date date= new Date();
         text_in_message = text_in_mes;
+        timestamp = date.getTime();
+        id = UUID.randomUUID().toString();
+
     }
 
     protected Message(Parcel in) {

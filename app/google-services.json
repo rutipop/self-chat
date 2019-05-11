@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "842777848626",
+    "firebase_url": "https://selfchat-ruti.firebaseio.com",
+    "project_id": "selfchat-ruti",
+    "storage_bucket": "selfchat-ruti.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842777848626:android:f0b2443752ef1d79",
+        "android_client_info": {
+          "package_name": "com.example.self_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842777848626-todlu0ed4imgbqm8huthrfflg0snkhod.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.self_chat",
+            "certificate_hash": "96d7b858169ed2488cb4860c4e6cdd40d5575568"
+          }
+        },
+        {
+          "client_id": "842777848626-ajrno3r15qj2nke9fqfhjt7420cakabp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3CeQocOjw3_lTehWGoAervydnVOviQY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842777848626-ajrno3r15qj2nke9fqfhjt7420cakabp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
