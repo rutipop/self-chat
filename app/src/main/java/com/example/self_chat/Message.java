@@ -16,13 +16,6 @@ public class Message implements Parcelable {
 
 
 
-//    static ArrayList<Message> get_all(){
-//        ArrayList<Message> all = new ArrayList<>();
-//        return all;
-//
-//    }
-
-
 
 
     Message(){}
