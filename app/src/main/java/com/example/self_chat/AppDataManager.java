@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -21,6 +22,7 @@ public class AppDataManager {
     private Executor executor = Executors.newCachedThreadPool();
     FirebaseFirestore firestore;
     private MutableLiveData<ArrayList<Message>> messagesLiveData = new MutableLiveData<>();
+    String userName = "";
 
     public AppDataManager(){
         messagesLiveData.setValue(new ArrayList<Message>());
@@ -39,6 +41,7 @@ public class AppDataManager {
                             @Override
                             public void run() {
                                 // here I'm at a BG thread for sure
+
                                 if (task.isSuccessful() && task.getResult() != null) {
                                     ArrayList<Message> allItemsFromFirestore = new ArrayList<>();
                                     for (QueryDocumentSnapshot document : task.getResult()) {
@@ -50,11 +53,92 @@ public class AppDataManager {
                         });
                     }
                 });
+
+
+
+
+        firestore.collection("my_username").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull final Task<QuerySnapshot> task) {
+                        // which thread am I in right now? do I know? I DONT KNOW!!!!!
+                        // a.f.a.i.k  im working really hard and I'm on the main thread right now!
+                        // delegate work to the executor:
+
+                        executor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                // here I'm at a BG thread for sure
+
+
+                                if (task.isSuccessful() && task.getResult() != null) {
+
+
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        userName =document.get("user_name").toString();
+
+                                    }
+
+                                }
+
+
+
+                            }
+                        });
+                    }
+                });
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     public LiveData<ArrayList<Message>> getMessagesLiveData() {
         return messagesLiveData;
     }
+
+    public String getUsername(){
+        firestore.collection("my_username").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull final Task<QuerySnapshot> task) {
+                        // which thread am I in right now? do I know? I DONT KNOW!!!!!
+                        // a.f.a.i.k  im working really hard and I'm on the main thread right now!
+                        // delegate work to the executor:
+
+                        executor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                // here I'm at a BG thread for sure
+
+
+                                if (task.isSuccessful() && task.getResult() != null) {
+
+
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        userName =document.get("user_name").toString();
+
+                                    }
+
+                                }
+
+
+
+                            }
+                        });
+                    }
+                });
+        return userName;
+    }
+
 
     public void insertItem(Message itemToInsert) {
         // first update our local phone - post to the live data
@@ -81,3 +165,5 @@ public class AppDataManager {
     }
 
 }
+
+

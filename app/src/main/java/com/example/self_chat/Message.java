@@ -1,5 +1,7 @@
 package com.example.self_chat;
 
+import android.bluetooth.BluetoothAdapter;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,10 +13,9 @@ import java.util.UUID;
 public class Message implements Parcelable {
 
     public String text_in_message;
-    public long timestamp;
+    public String timestamp;
     public String id;
-
-
+    public String originDevice;
 
 
 
@@ -24,9 +25,36 @@ public class Message implements Parcelable {
     Message(String text_in_mes){
         Date date= new Date();
         text_in_message = text_in_mes;
-        timestamp = date.getTime();
+        timestamp =(new Date()).toString();
         id = UUID.randomUUID().toString();
 
+        originDevice = getDeviceName();
+
+
+    }
+
+
+    public String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        } else {
+            return capitalize(manufacturer) + " " + model;
+        }
+    }
+
+
+    private String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
+        }
     }
 
     protected Message(Parcel in) {

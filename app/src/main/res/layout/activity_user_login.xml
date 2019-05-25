@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#95D85990"
+    android:visibility="visible"
+    tools:context=".UserLogin">
+
+    <TextView
+        android:id="@+id/helloUser"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="80dp"
+        android:gravity="center"
+        android:text="Hello, new user !"
+        android:textSize="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/pleaseFill"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="468dp"
+        android:gravity="center"
+        android:text="Please fill up your name :"
+
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <EditText
+        android:id="@+id/fillName"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="368dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/nameButton"
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="130dp"
+        android:layout_marginBottom="268dp"
+        android:text="This is my name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/skipButton"
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="130dp"
+        android:layout_marginBottom="176dp"
+        android:text="SKIP"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

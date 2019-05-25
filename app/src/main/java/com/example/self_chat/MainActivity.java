@@ -3,6 +3,7 @@ package com.example.self_chat;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity  implements MessageRecyclerU
 
     MySelfChatApp app ;
     AppDataManager dataManager ;
+    String userName;
 
 
     @Override
@@ -47,13 +50,43 @@ public class MainActivity extends AppCompatActivity  implements MessageRecyclerU
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        app = (MySelfChatApp) getApplication();
+        dataManager = app.manager;
+
+        if (getIntent() != null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                userName = extras.getString("entered_username");
+                //The key argument here must match that used in the other activity
+            }
+        }
+
+        if(userName!= null) {
+            if (userName.isEmpty()) {
+                userName = dataManager.getUsername();
+
+            }
+            TextView user_name_diaplay = (TextView) findViewById(R.id.user_name_text);
+            if (!userName.isEmpty()) {
+                user_name_diaplay.setText(" hello " + userName + "!");
+            } else {
+                user_name_diaplay.setText("");
+
+            }
+        }
+
+
+
+
+
+
+
         RecyclerView recyclerView = findViewById(R.id.message_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(addapter);
         addapter.callback =this;
 
-        app = (MySelfChatApp) getApplication();
-        dataManager = app.manager;
+
 
 
         final LiveData<ArrayList<Message>> liveData = dataManager.getMessagesLiveData();
@@ -68,8 +101,16 @@ public class MainActivity extends AppCompatActivity  implements MessageRecyclerU
                 Button sendButton = (Button) findViewById(R.id.buttonToSend);
                 final EditText filledInSend = (EditText) findViewById(R.id.wantToSend) ;
 
+
+
+
                 addapter.submitList(liveData.getValue());
                 Log.i("number of messages",  ""+liveData.getValue().size());
+
+
+
+
+
 
 
                 sendButton.setOnClickListener(new View.OnClickListener() {
@@ -100,26 +141,33 @@ public class MainActivity extends AppCompatActivity  implements MessageRecyclerU
     public void onMessageClick(final Message message) {
 
 
-        //creating a dialog:
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setCancelable(true);
-        builder.setTitle("You pressed a message which means you want to delete it");
-        builder.setMessage("Are You Sure?");
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dataManager.deletetItem(message);
-            }
-        });
-        builder.show();
+//        //creating a dialog:
+//        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//        builder.setCancelable(true);
+//        builder.setTitle("You pressed a message which means you want to delete it");
+//        builder.setMessage("Are You Sure?");
+//        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.cancel();
+//                    }
+//                });
+//
+//
+//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dataManager.deletetItem(message);
+//            }
+//        });
+//        builder.show();
+        Intent intent = new Intent(this, Message_info.class);
+        Gson gson = new Gson();
+        Type type = new TypeToken<Message>() {}.getType();
+        String json = gson.toJson(message, type);
+        intent.putExtra("selected_message",json);
+        setResult(RESULT_OK,intent);
+        startActivity(intent);
 
     }
 }
